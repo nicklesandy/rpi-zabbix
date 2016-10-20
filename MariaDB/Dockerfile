@@ -37,22 +37,36 @@ RUN \
   bash /tmp/config && \
   rm -f /tmp/config
 
-# Define mountable directories.
-VOLUME ["/etc/mysql", "/var/lib/mysql"]
+# clean all package
+RUN \
+  sudo apt-get clean  
+
+
 
 # Define working directory.
 WORKDIR /data
 
-#COPY ./schema.sql /root/
-#COPY ./images.sql /root/
-#COPY ./data.sql /root/
+
+# MySQL Config
+#ADD ./mysql/my.cnf /etc/mysql/conf.d/my.cnf
+ADD ./create/data.sql /tmp/create/data.sql
+ADD ./create/images.sql /tmp/create/images.sql
+ADD ./create/schema.sql /tmp/create/schema.sql
 
 
-# Define default command.
-CMD ["mysqld_safe"]
+# Custom script to setup Zabbix schema and start mysqld_safe
+ADD ./scripts/start.sh /start.sh
+RUN chmod 755 /start.sh
 
 # Expose ports.
 EXPOSE 3306
 
+# Define mountable directories.
+VOLUME ["/etc/mysql", "/var/lib/mysql"]
+
 # Set TERM env to avoid mysql client error message "TERM environment variable not set" when running from inside the container
 ENV TERM xterm
+
+
+# Sart the custom start script
+CMD ["/bin/bash", "/start.sh"]
