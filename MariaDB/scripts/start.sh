@@ -1,9 +1,7 @@
 #!/bin/bash
 
 if [ ! -f /mysql-configured ]; then 
- 	/sbin/service mysqld restart 
-
- 	/usr/bin/mysql_upgrade
+ 	/etc/init.d/mysql restart 
 
 	 sleep 10s
 
@@ -33,7 +31,7 @@ if [ ! -f /mysql-configured ]; then
 
 	 mysql -uroot -p"$MYSQL_PASSWORD" -e "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP ON zabbix.* TO 'zabbix'@'%' identified by 'zabbix';"
 
-	 /sbin/service mysqld stop
+	 /etc/init.d/mysql stop
 
 	 touch /mysql-configured
 fi

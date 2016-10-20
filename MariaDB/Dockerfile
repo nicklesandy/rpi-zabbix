@@ -39,7 +39,7 @@ WORKDIR /data
 
 
 # MySQL Config & Zabbix Schema
-ADD ./mysql/my.cnf /etc/mysql/conf.d/my.cnf
+#ADD ./mysql/my.cnf /etc/mysql/conf.d/my.cnf
 ADD ./create/data.sql /tmp/create/data.sql
 ADD ./create/images.sql /tmp/create/images.sql
 ADD ./create/schema.sql /tmp/create/schema.sql
