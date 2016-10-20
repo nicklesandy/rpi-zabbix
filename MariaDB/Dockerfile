@@ -29,25 +29,16 @@ RUN \
   sudo apt-get update && \                                                         
   sudo apt-get upgrade  && \
   apt-get -y install mariadb-server
-RUN \
-  sed -i 's/^\(bind-address\s.*\)/# \1/' /etc/mysql/my.cnf && \
-  echo "mysqld_safe &" > /tmp/config && \
-  echo "mysqladmin --silent --wait=30 ping || exit 1" >> /tmp/config && \
-  echo "mysql -e 'GRANT ALL PRIVILEGES ON *.* TO \"root\"@\"%\" WITH GRANT OPTION;'" >> /tmp/config && \
-  bash /tmp/config && \
-  rm -f /tmp/config
 
 # clean all package
 RUN \
   sudo apt-get clean  
 
-
-
 # Define working directory.
 WORKDIR /data
 
 
-# MySQL Config
+# MySQL Config & Zabbix Schema
 ADD ./mysql/my.cnf /etc/mysql/conf.d/my.cnf
 ADD ./create/data.sql /tmp/create/data.sql
 ADD ./create/images.sql /tmp/create/images.sql
@@ -66,7 +57,6 @@ VOLUME ["/etc/mysql", "/var/lib/mysql"]
 
 # Set TERM env to avoid mysql client error message "TERM environment variable not set" when running from inside the container
 ENV TERM xterm
-
 
 # Sart the custom start script
 CMD ["/bin/bash", "/start.sh"]
